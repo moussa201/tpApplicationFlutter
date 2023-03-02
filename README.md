@@ -1,15 +1,16 @@
-# tpApplicationFlutter
-Objectif L’objectif de cette première partie va être de se familiariser avec Flutter/Dart et de commencer à  comprendre le mode de fonctionnement. A la fin de ce TP, nous aurons une application possédant deux pages :  
-     
-      - Une première listant une liste de mots pouvant être rajoutés aux favoris 
-      
-      - Une seconde listant les mots ajoutés aux favoris
-      
-Etape 1 : Se familiariser avec Flutter/Dart - Comprendre le mode de fonctionnement. 
+# startup_name
 
+liste de mots pouvant être rajoutés aux favoris
 
-- Mise en place d’une ListView infinie déroulant : Pour ce faire, on a suivi toutes les étapes recommandées du Tp1. 
+## Getting Started
 
-- Résultat avec l’ajout de l’icône fig. 01  (Cf PowerPoint):  
+This project is a starting point for a Flutter application.
 
+A few resources to get you started if this is your first Flutter project:
 
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
