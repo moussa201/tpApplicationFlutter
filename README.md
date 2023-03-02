@@ -9,6 +9,7 @@ Etape 1 : Se familiariser avec Flutter/Dart - Comprendre le mode de fonctionneme
 
 
 - Mise en place d’une ListView infinie déroulant : Pour ce faire, on a suivi toutes les étapes recommandées du Tp1. 
+
 - Résultat avec l’ajout de l’icône fig. 01  (Cf PowerPoint):  
 
 
