@@ -1,29 +1,152 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:startup_name/firebase_options.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Startup Name Generator',
-      home: RandomWords(),
+      home: AuthenticationScreen(),
+    );
+  }
+}
+
+class AuthenticationScreen extends StatefulWidget {
+  @override
+  _AuthenticationScreenState createState() => _AuthenticationScreenState();
+}
+
+class _AuthenticationScreenState extends State<AuthenticationScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool _authenticated = false;
+  String _errorMessage = '';
+
+  Future<void> _authenticateUser() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      setState(() {
+        _authenticated = true;
+        _errorMessage = '';
+      });
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        setState(() {
+          _errorMessage = 'User not found';
+        });
+      } else if (e.code == 'wrong-password') {
+        setState(() {
+          _errorMessage = 'Wrong password';
+        });
+      }
+    }
+  }
+
+  void _signOut() async {
+    await FirebaseAuth.instance.signOut();
+    setState(() {
+      _authenticated = false;
+    });
+  }
+
+  void _signIn() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AuthenticationScreen()),
     );
   }
 
-}
-
-class RandomWords extends StatefulWidget {
   @override
-  _RandomWordsState createState() => _RandomWordsState();
+  Widget build(BuildContext context) {
+    if (!_authenticated) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Authentication Required'),
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                _errorMessage,
+                style: TextStyle(color: Colors.red),
+              ),
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                ),
+              ),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _authenticateUser();
+                },
+                child: Text('Authenticate'),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Startup Name Generator'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.list),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RandomWordsScreen()),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () {
+                _signOut();
+              },
+            ),
+          ],
+        ),
+        body: Center(
+          child: Text('You are authenticated!'),
+        ),
+      );
+    }
+  }
+}
+
+class RandomWordsScreen  extends StatefulWidget {
+  @override
+  _RandomWordsScreenState  createState() => _RandomWordsScreenState();
 }
 
 
-class _RandomWordsState extends State<RandomWords> {
+class _RandomWordsScreenState extends State<RandomWordsScreen> {
   final _suggestions = <WordPair>[];
   final _saved = <WordPair>{};
   final _biggerFont = const TextStyle(fontSize: 18.0);
